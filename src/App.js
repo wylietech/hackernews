@@ -41,23 +41,61 @@ if (filteredArray.length !== 2) {
   console.info("Array Length is " + filteredArray.length);
 }
 
+class Developer {
+  constructor(name, age) {
+    this.name = name;
+    this.age = age;
+  }
+
+  get isManager() {
+    return this.name === "Matthew Wylie";
+  } 
+
+  isSenior() {
+    return this.age > 35;
+  }
+}
+
+let matthew = new Developer("Matthew Wylie", 46);
+console.info(matthew.age);
+console.info(matthew.isSenior());
+console.info(matthew.isManager);
 
 
 class App extends Component {
+
+  //The constructor in the base class stores the propertes for us
+  constructor(props) {
+    super(props);
+
+    this.title = props.title;
+    this.list = list;
+
+    this.onDismiss = this.onDismiss.bind(this);
+  }
+
+  onDismiss(objectId){
+    console.log("Dismiss item " + objectId);
+  }
 
   render() {
 
     return (
       <div className="App">
-         {list.map(item => 
+         {this.list.map(item => 
               <div key={item.objectID}>
                 <span>  
                   <a href={item.url}>item.title</a>
                 </span>
-                <span>This is a text based field</span>
+                <span>{this.title}</span>
                 <span>{item.author}</span>
                 <span>{item.num_comments}</span>
                 <span>{item.points}</span>
+                <span>
+                  <button onClick={() => this.onDismiss(item.objectID)} type="button">
+                    Dismiss   
+                  </button>
+                </span>
               </div>
          )}
       </div>

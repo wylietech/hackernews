@@ -21,24 +21,45 @@ const list = [
   },
 ];
 
+function filterListItem(item) {
+  return item >= 5;
+}
+
+let itemsArray = [1,2,3,4,5,6];
+
+let filteredArray = itemsArray.filter(filterListItem);
+let otherFilteredArray = itemsArray.filter(item => item >= 2);
+let againFilterdArray = itemsArray.filter(item => {
+  return item >= 2;
+});
+
+console.info(otherFilteredArray.length);
+
+if (filteredArray.length !== 2) {
+  console.error("Something went wrong");
+} else {
+  console.info("Array Length is " + filteredArray.length);
+}
+
+
+
 class App extends Component {
 
   render() {
 
     return (
       <div className="App">
-         {list.map(function(item) {
-           return (
+         {list.map(item => 
               <div key={item.objectID}>
                 <span>  
                   <a href={item.url}>item.title</a>
                 </span>
+                <span>This is a text based field</span>
                 <span>{item.author}</span>
                 <span>{item.num_comments}</span>
                 <span>{item.points}</span>
               </div>
-           );
-         })}
+         )}
       </div>
     );
   }

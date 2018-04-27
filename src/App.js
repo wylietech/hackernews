@@ -69,20 +69,23 @@ class App extends Component {
     super(props);
 
     this.title = props.title;
-    this.list = list;
+    this.state = {list: list};
 
     this.onDismiss = this.onDismiss.bind(this);
   }
 
-  onDismiss(objectId){
-    console.log("Dismiss item " + objectId);
+  onDismiss(itemIdToDismiss){
+    const updatedList = this.state.list.filter(item => item.objectID !== itemIdToDismiss);
+    
+    //Set state will cause React to redraw
+    this.setState( {list : updatedList})
   }
 
   render() {
 
     return (
       <div className="App">
-         {this.list.map(item => 
+         {this.state.list.map(item => 
               <div key={item.objectID}>
                 <span>  
                   <a href={item.url}>item.title</a>

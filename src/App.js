@@ -62,6 +62,16 @@ console.info(matthew.isSenior());
 console.info(matthew.isManager);
 
 
+function isIncludedInSearch(searchTerm)  {
+  return function(item) {
+    return 
+    item.title.toLowerCase().includes(searchTerm.toLowerCase());
+  }
+}
+
+
+const isSearched = searchTerm => item => item.title.toLowerCase().includes(searchTerm.toLowerCase());
+
 class App extends Component {
 
   //The constructor in the base class stores the propertes for us
@@ -69,9 +79,19 @@ class App extends Component {
     super(props);
 
     this.title = props.title;
-    this.state = {list: list};
+    
+    this.state = {
+      list: list,
+      searchTerm: ''
+    };
 
     this.onDismiss = this.onDismiss.bind(this);
+    this.onSearchChange = this.onSearchChange.bind(this);
+  }
+
+  onSearchChange(event) {
+    console.info("Search Chamged...");
+    this.setState({searchTerm: event.target.value});
   }
 
   onDismiss(itemIdToDismiss){
@@ -85,10 +105,15 @@ class App extends Component {
 
     return (
       <div className="App">
-         {this.state.list.map(item => 
+
+        <form>
+          <input type="text" onChange={this.onSearchChange}/>
+        </form>
+         {this.state.list.filter(isSearched(this.state.searchTerm)).map(item => 
               <div key={item.objectID}>
+                
                 <span>  
-                  <a href={item.url}>item.title</a>
+                  <a href={item.url}>{item.title}</a>
                 </span>
                 <span>{this.title}</span>
                 <span>{item.author}</span>

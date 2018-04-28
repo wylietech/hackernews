@@ -21,55 +21,6 @@ const list = [
   },
 ];
 
-function filterListItem(item) {
-  return item >= 5;
-}
-
-let itemsArray = [1,2,3,4,5,6];
-
-let filteredArray = itemsArray.filter(filterListItem);
-let otherFilteredArray = itemsArray.filter(item => item >= 2);
-let againFilterdArray = itemsArray.filter(item => {
-  return item >= 2;
-});
-
-console.info(otherFilteredArray.length);
-
-if (filteredArray.length !== 2) {
-  console.error("Something went wrong");
-} else {
-  console.info("Array Length is " + filteredArray.length);
-}
-
-class Developer {
-  constructor(name, age) {
-    this.name = name;
-    this.age = age;
-  }
-
-  get isManager() {
-    return this.name === "Matthew Wylie";
-  } 
-
-  isSenior() {
-    return this.age > 35;
-  }
-}
-
-let matthew = new Developer("Matthew Wylie", 46);
-console.info(matthew.age);
-console.info(matthew.isSenior());
-console.info(matthew.isManager);
-
-
-function isIncludedInSearch(searchTerm)  {
-  return function(item) {
-    return 
-    item.title.toLowerCase().includes(searchTerm.toLowerCase());
-  }
-}
-
-
 const isSearched = searchTerm => item => item.title.toLowerCase().includes(searchTerm.toLowerCase());
 
 class App extends Component {
@@ -78,12 +29,7 @@ class App extends Component {
   constructor(props) {
     super(props);
 
-    this.title = props.title;
-    
-    this.state = {
-      list: list,
-      searchTerm: ''
-    };
+    this.state = { list, searchTerm : '' };
 
     this.onDismiss = this.onDismiss.bind(this);
     this.onSearchChange = this.onSearchChange.bind(this);
@@ -102,35 +48,95 @@ class App extends Component {
   }
 
   render() {
-
+    const { searchTerm, list } = this.state;
     return (
       <div className="App">
-
-        <form>
-          <input type="text" onChange={this.onSearchChange}/>
-        </form>
-         {this.state.list.filter(isSearched(this.state.searchTerm)).map(item => 
-              <div key={item.objectID}>
-                
-                <span>  
-                  <a href={item.url}>{item.title}</a>
-                </span>
-                <span>{this.title}</span>
-                <span>{item.author}</span>
-                <span>{item.num_comments}</span>
-                <span>{item.points}</span>
-                <span>
-                  <button onClick={() => this.onDismiss(item.objectID)} type="button">
-                    Dismiss   
-                  </button>
-                </span>
-              </div>
-         )}
+        <Search
+          value={searchTerm}
+          onChange={this.onSearchChange}
+        />
+        <Table
+          list={list}
+          pattern={searchTerm}
+          onDismiss={this.onDismiss}
+        />
       </div>
     );
   }
 }
 
+//THis is the class version of a search component
+//actually overkill, since the component has no state
+class SearchClz extends Component {
+  render() {
+    const { value, onChange, children } = this.props;
+    return (
+      <form>
+        {children} <input
+          type="text"
+          value={value}
+          onChange={onChange}
+        />
+      </form>
+    );
+  }
+}
 
+//This is the same as the class version above, but written as a simple function
+//This is preferable when you dont need to modify state or lifecycle
+//Note that there is no this instance is a function
+function Search(props) {
+  const { value, onChange, children } = props;
+  return (
+    <form>
+      {children} <input
+        type="text"
+        value={value}
+        onChange={onChange}
+      />
+    </form>
+  );
+}
+
+function Table(props) {
+  const {list, pattern, onDismiss} = props;
+  return (
+    <div>
+    {list.filter(isSearched(pattern)).map(item =>
+      <div key={item.objectID}>
+        <span>
+          <a href={item.url}>{item.title}</a>
+        </span>
+        <span>{item.author}</span>
+        <span>{item.num_comments}</span>
+        <span>{item.points}</span>
+        <span>
+          <Button onClick = {() => onDismiss(item.objectID)}>
+            Dismiss
+          </Button>
+        </span>
+      </div>
+    )}
+  </div>
+  )
+}
+
+function Button(props) {  
+  const {
+    onClick,
+    className = '',
+    children
+  } = props;
+
+  return (
+    <button
+      onClick={onClick}
+      className={className}
+      type="button"
+    >
+      {children}
+    </button>
+  );
+}
 
 export default App;

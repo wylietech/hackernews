@@ -85,8 +85,7 @@ class SearchClz extends Component {
 //This is the same as the class version above, but written as a simple function
 //This is preferable when you dont need to modify state or lifecycle
 //Note that there is no this instance is a function
-function Search(props) {
-  const { value, onChange, children } = props;
+function SearchFn({ value, onChange, children }) {
   return (
     <form>
       {children} <input
@@ -98,8 +97,19 @@ function Search(props) {
   );
 }
 
-function Table(props) {
-  const {list, pattern, onDismiss} = props;
+//If we turn the function into a lambda without a body then the return is implicit
+//This looks *too* concise but it works. We are storing the function as a const,
+//but because it returns JSX then React knows its a component
+const Search = ({value, onChange, children}) => 
+  <form>
+      {children} <input
+        type="text"
+        value={value}
+        onChange={onChange}
+      />
+    </form>
+
+function Table({list, pattern, onDismiss}) {
   return (
     <div>
     {list.filter(isSearched(pattern)).map(item =>
@@ -121,13 +131,7 @@ function Table(props) {
   )
 }
 
-function Button(props) {  
-  const {
-    onClick,
-    className = '',
-    children
-  } = props;
-
+function Button({onClick, className, children}) {  
   return (
     <button
       onClick={onClick}

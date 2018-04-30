@@ -47,10 +47,24 @@ class App extends Component {
   }
 
   onDismiss(itemIdToDismiss){
-    const updatedList = this.state.list.filter(item => item.objectID !== itemIdToDismiss);
+
+    //Create a function to do our filtering
+    const isNotId = item => item.objectID !== itemIdToDismiss;
+
+    //Create a filtered list of hits
+    console.info("Before filtering we had " + this.state.result.hits.length + " items");
+    const updatedHits = this.state.result.hits.filter(isNotId);
+
+    console.info("After filtering we had " + updatedHits.length + " items");
     
+    //We've updated the list of hits, but the UI is bound to the API response 
+    //(which is a complex object). Rather than change the results we clone them and
+    //replace the original hits with our modified vesrion
+    //The assign function takes the first object and then overwrites with each argument in turn
+    const updatedResult = Object.assign({}, this.state.result, {hits: updatedHits});
+
     //Set state will cause React to redraw
-    this.setState( {list : updatedList})
+    this.setState({result : updatedResult})
   }
 
   render() {
@@ -76,38 +90,6 @@ class App extends Component {
       </div>
     );
   }
-}
-
-//THis is the class version of a search component
-//actually overkill, since the component has no state
-class SearchClz extends Component {
-  render() {
-    const { value, onChange, children } = this.props;
-    return (
-      <form>
-        {children} <input
-          type="text"
-          value={value}
-          onChange={onChange}
-        />
-      </form>
-    );
-  }
-}
-
-//This is the same as the class version above, but written as a simple function
-//This is preferable when you dont need to modify state or lifecycle
-//Note that there is no this instance is a function
-function SearchFn({ value, onChange, children }) {
-  return (
-    <form>
-      {children} <input
-        type="text"
-        value={value}
-        onChange={onChange}
-      />
-    </form>
-  );
 }
 
 //If we turn the function into a lambda without a body then the return is implicit
